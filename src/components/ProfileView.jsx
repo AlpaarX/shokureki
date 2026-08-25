@@ -723,7 +723,7 @@ export default function ProfileView({
     <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:pb-24">
       <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c]">
         <div
-          className="document-type-tabs mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto border-b border-[#deddd6] pb-3 dark:border-[#303b35]"
+          className="document-type-tabs mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto overflow-y-hidden border-b border-[#deddd6] pb-3 dark:border-[#303b35]"
           role="tablist"
           aria-label="Document type"
         >
@@ -771,7 +771,7 @@ export default function ProfileView({
           </span>
         </div>
 
-        <div className="mb-4 flex min-w-0 items-end overflow-x-auto border-b border-[#cbc9c1] px-2 dark:border-[#3b4841]">
+        <div className="document-version-tabs mb-4 flex min-w-0 items-end overflow-x-auto overflow-y-hidden border-b border-[#cbc9c1] px-2 dark:border-[#3b4841]">
           {library[documentTab].map((version) => {
             const selected = activeVersion(documentTab).id === version.id;
             return (

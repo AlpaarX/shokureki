@@ -9,6 +9,11 @@
     font-synthesis: none;
   }
 
+  :root[data-theme="dark"] {
+    color: #edf3ef;
+    background: #101411;
+  }
+
   html {
     scroll-behavior: smooth;
   }
@@ -22,25 +27,33 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  [data-theme="dark"] body {
+  [data-theme="dark"] body,
+  [data-theme="dark"] #root,
+  [data-theme="dark"] .app-shell {
     background: #101411;
   }
 
-  .document-type-tabs {
+  .document-type-tabs,
+  .document-version-tabs {
+    overflow-y: hidden;
     overscroll-behavior-x: contain;
     scrollbar-width: thin;
   }
 
-  .document-type-tabs::-webkit-scrollbar {
+  .document-type-tabs::-webkit-scrollbar,
+  .document-version-tabs::-webkit-scrollbar {
     height: 5px;
+    width: 0;
   }
 
-  .document-type-tabs::-webkit-scrollbar-thumb {
+  .document-type-tabs::-webkit-scrollbar-thumb,
+  .document-version-tabs::-webkit-scrollbar-thumb {
     border-radius: 999px;
     background: #b8bcb8;
   }
 
-  [data-theme="dark"] .document-type-tabs::-webkit-scrollbar-thumb {
+  [data-theme="dark"] .document-type-tabs::-webkit-scrollbar-thumb,
+  [data-theme="dark"] .document-version-tabs::-webkit-scrollbar-thumb {
     background: #4b5a52;
   }
 

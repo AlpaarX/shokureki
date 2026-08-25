@@ -8,6 +8,16 @@
       name="description"
       content="Create and manage CV, rirekisho, and shokumu keirekisho documents."
     />
+    <script>
+      (() => {
+        const savedTheme = window.localStorage.getItem("shokureki.theme");
+        const theme = savedTheme === "light" || savedTheme === "dark"
+          ? savedTheme
+          : window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <title>Shokureki — Application documents</title>
   </head>
   <body>

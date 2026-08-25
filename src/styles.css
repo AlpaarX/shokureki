@@ -22,6 +22,28 @@
     -webkit-tap-highlight-color: transparent;
   }
 
+  [data-theme="dark"] body {
+    background: #101411;
+  }
+
+  .document-type-tabs {
+    overscroll-behavior-x: contain;
+    scrollbar-width: thin;
+  }
+
+  .document-type-tabs::-webkit-scrollbar {
+    height: 5px;
+  }
+
+  .document-type-tabs::-webkit-scrollbar-thumb {
+    border-radius: 999px;
+    background: #b8bcb8;
+  }
+
+  [data-theme="dark"] .document-type-tabs::-webkit-scrollbar-thumb {
+    background: #4b5a52;
+  }
+
   button,
   input,
   select,

@@ -1,7 +1,22 @@
 import React, { useEffect, useState } from "react";
+import Header from "./components/Header";
 import ProfileView from "./components/ProfileView";
 
 const STORAGE_KEY = "shokureki.documents.v1";
+const DOCUMENT_TABS = ["cv", "rirekisho", "shokumu"];
+
+function documentTabFromLocation() {
+  const basePath = import.meta.env.BASE_URL.replace(/\/$/, "");
+  const route = window.location.pathname
+    .slice(window.location.pathname.startsWith(basePath) ? basePath.length : 0)
+    .replace(/^\/+|\/+$/g, "");
+  return DOCUMENT_TABS.includes(route) ? route : "cv";
+}
+
+function pathForDocumentTab(tab) {
+  const basePath = import.meta.env.BASE_URL;
+  return tab === "cv" ? basePath : `${basePath}${tab}/`;
+}
 
 function loadDocuments() {
   try {
@@ -14,20 +29,42 @@ function loadDocuments() {
 
 export default function App() {
   const [documents, setDocuments] = useState(loadDocuments);
+  const [documentTab, setDocumentTab] = useState(documentTabFromLocation);
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
   }, [documents]);
 
+  useEffect(() => {
+    const handlePopState = () => setDocumentTab(documentTabFromLocation());
+    window.addEventListener("popstate", handlePopState);
+    return () => window.removeEventListener("popstate", handlePopState);
+  }, []);
+
+  useEffect(() => {
+    const labels = {
+      cv: "CV",
+      rirekisho: "履歴書",
+      shokumu: "職務経歴書",
+    };
+    document.title = `${labels[documentTab]} — Shokureki`;
+  }, [documentTab]);
+
+  const selectDocumentTab = (tab) => {
+    if (tab === documentTab) return;
+    window.history.pushState({ documentTab: tab }, "", pathForDocumentTab(tab));
+    setDocumentTab(tab);
+  };
+
   return (
-    <main className="min-h-screen">
-      <header className="border-b border-[#d8d7d0] bg-white px-[clamp(16px,3vw,40px)] py-4">
-        <div className="mx-auto flex max-w-[1800px] items-baseline gap-3">
-          <h1 className="text-xl font-bold tracking-tight text-[#173b36]">Shokureki</h1>
-          <p className="text-sm text-[#747a76]">Application documents</p>
-        </div>
-      </header>
-      <ProfileView documents={documents} onDocumentsChange={setDocuments} />
+    <main className="app-shell min-h-screen">
+      <Header />
+      <ProfileView
+        documents={documents}
+        documentTab={documentTab}
+        onDocumentTabChange={selectDocumentTab}
+        onDocumentsChange={setDocuments}
+      />
     </main>
   );
 }

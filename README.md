@@ -10,6 +10,8 @@ Document versions save automatically in the browser. Use the PDF button to open 
 
 All document data, including every CV version, is stored only in the browser's local storage. It is not sent to a server or committed to this repository.
 
+CV opens at the site root. 履歴書 and 職務経歴書 use their own shareable routes, and the interface includes a persistent light/dark theme switch.
+
 ## Development
 
 ```sh

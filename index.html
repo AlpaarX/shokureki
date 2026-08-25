@@ -12,6 +12,15 @@
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (() => {
+        const route = new URLSearchParams(window.location.search).get("route");
+        if (!route) return;
+        const basePath = "/shokureki/";
+        const cleanRoute = route.replace(/^\/+|\/+$/g, "");
+        window.history.replaceState(null, "", `${basePath}${cleanRoute ? `${cleanRoute}/` : ""}`);
+      })();
+    </script>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>

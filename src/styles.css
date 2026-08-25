@@ -92,6 +92,12 @@
       padding-bottom: calc(54px + env(safe-area-inset-bottom));
     }
 
+    input,
+    select,
+    textarea {
+      font-size: 16px !important;
+    }
+
     .interview-prep {
       width: 100%;
       max-width: 100%;

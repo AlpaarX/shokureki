@@ -56,10 +56,7 @@ export default function Header() {
       ].join(" ")}
     >
       <div className="mx-auto flex max-w-[1800px] items-center gap-3">
-        <div className="min-w-0">
-          <h1 className="truncate text-xl font-bold tracking-tight text-[#173b36] dark:text-[#edf3ef]">Shokureki</h1>
-          <p className="truncate text-sm text-[#747a76] dark:text-[#9ca9a2]">Application documents</p>
-        </div>
+        <h1 className="truncate text-xl font-bold tracking-tight text-[#173b36] dark:text-[#edf3ef]">職歴</h1>
         <button
           className="ml-auto grid h-10 w-10 flex-none place-items-center rounded-full border border-[#d5d4ce] bg-[#faf9f5] text-[#45514b] transition hover:border-[#6c897e] hover:text-[#1e554a] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#d4ddd7] dark:hover:border-[#739889] dark:hover:text-[#a8d9c6]"
           type="button"

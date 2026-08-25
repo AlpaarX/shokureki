@@ -47,7 +47,7 @@ export default function App() {
       rirekisho: "履歴書",
       shokumu: "職務経歴書",
     };
-    document.title = `${labels[documentTab]} — Shokureki`;
+    document.title = `${labels[documentTab]} — 職歴`;
   }, [documentTab]);
 
   const selectDocumentTab = (tab) => {

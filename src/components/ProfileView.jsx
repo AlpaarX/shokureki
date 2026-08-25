@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Eye, FileText, Languages, Lock, Plus, Printer, Save, X } from "lucide-react";
+import { Eye, FileText, Languages, Lock, Plus, Printer, X } from "lucide-react";
+import DocumentNavigation from "./DocumentNavigation";
 import { generateEnglishCv, generateRirekishoData, generateShokumuKeirekishoData } from "../utils/documents";
 import { defaultProfileText } from "../utils/profile";
 
@@ -722,54 +723,7 @@ export default function ProfileView({
   return (
     <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:pb-24">
       <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c]">
-        <div
-          className="document-type-tabs mb-4 flex flex-nowrap items-center gap-2 overflow-x-auto overflow-y-hidden border-b border-[#deddd6] pb-3 dark:border-[#303b35]"
-          role="tablist"
-          aria-label="Document type"
-        >
-          <button
-            className={[
-              "flex h-10 flex-none items-center gap-2 whitespace-nowrap rounded-md px-4 text-sm font-semibold transition",
-              documentTab === "cv"
-                ? "bg-[#1e554a] text-white"
-                : "border border-[#d5d4ce] bg-[#faf9f5] text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]",
-            ].join(" ")}
-            onClick={() => onDocumentTabChange("cv")}
-            role="tab"
-            aria-selected={documentTab === "cv"}
-          >
-            <FileText size={16} /> CV
-          </button>
-          <button
-            className={[
-              "flex h-10 flex-none items-center gap-2 whitespace-nowrap rounded-md px-4 text-sm font-semibold transition",
-              documentTab === "rirekisho"
-                ? "bg-[#1e554a] text-white"
-                : "border border-[#d5d4ce] bg-[#faf9f5] text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]",
-            ].join(" ")}
-            onClick={() => onDocumentTabChange("rirekisho")}
-            role="tab"
-            aria-selected={documentTab === "rirekisho"}
-          >
-            <Languages size={16} /> 履歴書
-          </button>
-          <button
-            className={[
-              "flex h-10 flex-none items-center gap-2 whitespace-nowrap rounded-md px-4 text-sm font-semibold transition",
-              documentTab === "shokumu"
-                ? "bg-[#1e554a] text-white"
-                : "border border-[#d5d4ce] bg-[#faf9f5] text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]",
-            ].join(" ")}
-            onClick={() => onDocumentTabChange("shokumu")}
-            role="tab"
-            aria-selected={documentTab === "shokumu"}
-          >
-            <FileText size={16} /> 職務経歴書
-          </button>
-          <span className="ml-auto flex flex-none items-center gap-1.5 whitespace-nowrap pl-2 text-xs font-semibold text-[#747a76] dark:text-[#9ca9a2]">
-            <Save size={14} /> Versions save automatically
-          </span>
-        </div>
+        <DocumentNavigation activeTab={documentTab} onChange={onDocumentTabChange} />
 
         <div className="document-version-tabs mb-4 flex min-w-0 items-end overflow-x-auto overflow-y-hidden border-b border-[#cbc9c1] px-2 dark:border-[#3b4841]">
           {library[documentTab].map((version) => {
@@ -1048,6 +1002,7 @@ export default function ProfileView({
           </div>
         )}
       </section>
+      <DocumentNavigation activeTab={documentTab} mobile onChange={onDocumentTabChange} />
     </section>
   );
 }

@@ -1,8 +1,11 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Eye, FileText, Languages, Lock, Plus, Printer, X } from "lucide-react";
-import DocumentNavigation from "./DocumentNavigation";
-import { generateEnglishCv, generateRirekishoData, generateShokumuKeirekishoData } from "../utils/documents";
-import { defaultProfileText } from "../utils/profile";
+import DocumentNavigation from "../DocumentNavigation";
+import { generateEnglishCv, generateRirekishoData, generateShokumuKeirekishoData } from "../../utils/documents";
+import { defaultCandidateText } from "../../utils/defaults";
+import CvDocument from "./CvDocument";
+import RirekishoDocument from "./RirekishoDocument";
+import ShokumuDocument from "./ShokumuDocument";
+import VersionTabs from "./VersionTabs";
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -85,16 +88,6 @@ function renderMarkdown(markdown) {
   }
 
   return html.join("");
-}
-
-function insertTextareaText(textarea, value) {
-  const start = textarea.selectionStart;
-  const end = textarea.selectionEnd;
-  const nextValue = `${textarea.value.slice(0, start)}${value}${textarea.value.slice(end)}`;
-  textarea.value = nextValue;
-  textarea.selectionStart = start + value.length;
-  textarea.selectionEnd = start + value.length;
-  textarea.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
 function splitRirekishoLines(value) {
@@ -474,20 +467,6 @@ const stanfordCvPrintStyle = `
   .stanford-cv li { display: list-item; margin: 0; padding-left: 2px; }
 `;
 
-function Field({ label, value, onChange, multiline = false }) {
-  const inputClass = "w-full rounded-md border border-[#cfcec7] bg-[#fbfaf7] px-3 py-2 text-sm text-[#17201d] outline-none focus:border-[#6c897e] focus:ring-4 focus:ring-[#1e554a]/10 dark:border-[#39453f] dark:bg-[#111713] dark:text-[#edf3ef]";
-  return (
-    <label className="grid gap-1.5">
-      <span className="text-xs font-bold uppercase tracking-wide text-[#747a76] dark:text-[#9ca9a2]">{label}</span>
-      {multiline ? (
-        <textarea className={`${inputClass} min-h-24 resize-y`} value={value} onChange={(event) => onChange(event.target.value)} />
-      ) : (
-        <input className={inputClass} value={value} onChange={(event) => onChange(event.target.value)} />
-      )}
-    </label>
-  );
-}
-
 function documentId(type) {
   return `${type}-${window.crypto?.randomUUID?.() || `${Date.now()}-${Math.random().toString(36).slice(2)}`}`;
 }
@@ -556,16 +535,16 @@ function addMissingTemplates(library, sourceText) {
   }), { ...library });
 }
 
-export default function ProfileView({
+export default function DocumentsView({
   documents,
   documentTab,
   mobileViewMode,
   onDocumentTabChange,
   onDocumentsChange,
 }) {
-  const fallbackLibrary = useMemo(() => createDocumentLibrary(defaultProfileText), []);
+  const fallbackLibrary = useMemo(() => createDocumentLibrary(defaultCandidateText), []);
   const library = useMemo(
-    () => isDocumentLibrary(documents) ? addMissingTemplates(documents, defaultProfileText) : fallbackLibrary,
+    () => isDocumentLibrary(documents) ? addMissingTemplates(documents, defaultCandidateText) : fallbackLibrary,
     [documents, fallbackLibrary],
   );
   const [renamingVersionId, setRenamingVersionId] = useState(null);
@@ -685,7 +664,7 @@ export default function ProfileView({
     if (versions[closingIndex].isTemplate) return;
     let remaining = versions.filter((version) => version.id !== id);
     if (!remaining.length) {
-      remaining = [newDocumentVersion(type, defaultProfileText, 1)];
+      remaining = [newDocumentVersion(type, defaultCandidateText, 1)];
     }
     const activeId = library.active?.[type];
     const nextActiveId = activeId === id
@@ -713,7 +692,7 @@ export default function ProfileView({
 
   const addVersion = (type) => {
     const template = library[type].find((version) => version.isTemplate)
-      || newTemplateVersion(type, defaultProfileText);
+      || newTemplateVersion(type, defaultCandidateText);
     const versionNumber = library[type].filter((item) => !item.isTemplate).length + 1;
     const version = copyTemplateVersion(type, template, versionNumber);
     onDocumentsChange({
@@ -728,281 +707,57 @@ export default function ProfileView({
       <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c] max-md:rounded-none max-md:border-x-0 max-md:border-t-0 max-md:p-3">
         <DocumentNavigation activeTab={documentTab} onChange={onDocumentTabChange} />
 
-        <div className="document-version-tabs mb-4 flex min-w-0 items-end overflow-x-auto overflow-y-hidden border-b border-[#cbc9c1] px-2 dark:border-[#3b4841] max-md:-mx-3 max-md:px-3">
-          {library[documentTab].map((version) => {
-            const selected = activeVersion(documentTab).id === version.id;
-            return (
-              <div
-                key={version.id}
-                className={[
-                  "group relative -mb-px flex h-10 min-w-32 max-w-56 items-center gap-2 rounded-t-lg border pl-4 pr-2 text-left text-sm font-semibold transition",
-                  selected
-                    ? "z-10 border-[#cbc9c1] border-b-white bg-white text-[#17201d] dark:border-[#3b4841] dark:border-b-[#18201c] dark:bg-[#18201c] dark:text-[#edf3ef]"
-                    : "border-transparent bg-[#eceae4] text-[#68706b] hover:bg-[#e3e1da] dark:bg-[#111713] dark:text-[#aab5ae] dark:hover:bg-[#202a25]",
-                ].join(" ")}
-                onClick={() => selectVersion(documentTab, version.id)}
-                onDoubleClick={() => startRenamingVersion(version)}
-                onAuxClick={(event) => {
-                  if (event.button === 1) {
-                    event.preventDefault();
-                    closeVersion(documentTab, version.id);
-                  }
-                }}
-                onKeyDown={(event) => {
-                  if (event.target === event.currentTarget && (event.key === "Enter" || event.key === " ")) {
-                    event.preventDefault();
-                    selectVersion(documentTab, version.id);
-                  }
-                }}
-                title={version.isTemplate ? "Template (locked tab)" : version.title}
-                role="tab"
-                tabIndex={0}
-                aria-selected={selected}
-              >
-                {version.isTemplate
-                  ? <Lock size={14} />
-                  : documentTab === "rirekisho" ? <Languages size={14} /> : <FileText size={14} />}
-                {renamingVersionId === version.id ? (
-                  <input
-                    className="min-w-0 flex-1 rounded border border-[#6c897e] bg-white px-1.5 py-0.5 text-sm text-[#17201d] outline-none dark:bg-[#18201c] dark:text-[#edf3ef]"
-                    value={versionNameDraft}
-                    onChange={(event) => setVersionNameDraft(event.target.value)}
-                    onClick={(event) => event.stopPropagation()}
-                    onDoubleClick={(event) => event.stopPropagation()}
-                    onBlur={() => finishRenamingVersion(documentTab, version.id)}
-                    onKeyDown={(event) => {
-                      event.stopPropagation();
-                      if (event.key === "Enter") event.currentTarget.blur();
-                      if (event.key === "Escape") setRenamingVersionId(null);
-                    }}
-                    aria-label="Version name"
-                    autoFocus
-                  />
-                ) : (
-                  <span className="min-w-0 flex-1 truncate">{version.title}</span>
-                )}
-                {!version.isTemplate && (
-                  <button
-                    className="grid h-6 w-6 flex-none place-items-center rounded text-[#7d837f] opacity-60 transition hover:bg-[#d8d6cf] hover:text-[#8c3429] group-hover:opacity-100 dark:text-[#9ca9a2] dark:hover:bg-[#313d37] dark:hover:text-[#ff9f91]"
-                    type="button"
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      closeVersion(documentTab, version.id);
-                    }}
-                    title={`Close ${version.title}`}
-                    aria-label={`Close ${version.title}`}
-                  >
-                    <X size={14} />
-                  </button>
-                )}
-              </div>
-            );
-          })}
-          <button
-            className="mb-1 ml-1 grid h-8 w-8 flex-none place-items-center rounded-md text-[#5d6761] transition hover:bg-[#dfddd6] hover:text-[#1e554a] dark:text-[#aab5ae] dark:hover:bg-[#26322c] dark:hover:text-[#a8d9c6]"
-            onClick={() => addVersion(documentTab)}
-            title={`Add ${documentTab === "cv" ? "CV" : documentTab === "rirekisho" ? "履歴書" : "職務経歴書"} version`}
-            aria-label={`Add ${documentTab} version`}
-          >
-            <Plus size={18} />
-          </button>
-        </div>
+        <VersionTabs
+          activeId={activeVersion(documentTab).id}
+          documentType={documentTab}
+          nameDraft={versionNameDraft}
+          onAdd={() => addVersion(documentTab)}
+          onCancelRename={() => setRenamingVersionId(null)}
+          onClose={(id) => closeVersion(documentTab, id)}
+          onFinishRename={(id) => finishRenamingVersion(documentTab, id)}
+          onNameDraftChange={setVersionNameDraft}
+          onSelect={(id) => selectVersion(documentTab, id)}
+          onStartRename={startRenamingVersion}
+          renamingId={renamingVersionId}
+          versions={library[documentTab]}
+        />
 
         {documentTab === "cv" ? (
-          <div>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-[#e7eee8] text-[#1e554a] dark:bg-[#20332a] dark:text-[#a8d9c6]">
-              <FileText size={18} />
-            </span>
-            <input
-              className={`min-w-0 flex-1 bg-transparent text-base font-bold outline-none ${cvVersion.isTemplate ? "cursor-default" : "focus:rounded focus:ring-2 focus:ring-[#1e554a]/20"}`}
-              value={cvVersion.title}
-              onChange={(event) => {
-                if (!cvVersion.isTemplate) updateVersion("cv", { title: event.target.value });
-              }}
-              readOnly={cvVersion.isTemplate}
-              aria-label="CV version name"
-            />
-            <button
-              className="ml-auto flex h-9 flex-none items-center gap-2 rounded-md border border-[#d5d4ce] bg-[#faf9f5] px-3 text-sm font-semibold text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]"
-              onClick={() => printDocument("CV", `<article class="stanford-cv">${cvHtml}</article>`, stanfordCvPrintStyle)}
-            >
-              <Printer size={16} /> PDF
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-3 max-lg:grid-cols-1">
-            <textarea
-              className={`${mobileEditorClass} min-h-[620px] resize-y rounded-md border border-[#d8d7d0] bg-[#fbfaf7] p-4 font-mono text-[13px] leading-6 text-[#17201d] outline-none focus:border-[#6c897e] focus:ring-4 focus:ring-[#1e554a]/10 dark:border-[#303b35] dark:bg-[#111713] dark:text-[#edf3ef] max-md:min-h-[calc(100dvh-220px)] max-md:rounded-xl`}
-              value={cvMarkdown}
-              onChange={(event) => updateVersion("cv", { content: event.target.value })}
-              onKeyDown={(event) => {
-                if (event.key !== "Tab") return;
-                event.preventDefault();
-                insertTextareaText(event.currentTarget, "  ");
-              }}
-              aria-label="CV Markdown editor"
-            />
-            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-              <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#747a76]">
-                <Eye size={14} /> A4 preview
-              </div>
-              <article className="a4-preview-page text-sm leading-6 text-[#17201d]">
-                <div
-                  className="cv-preview stanford-cv"
-                  dangerouslySetInnerHTML={{ __html: cvHtml }}
-                />
-              </article>
-            </div>
-          </div>
-          </div>
+          <CvDocument
+            html={cvHtml}
+            mobileEditorClass={mobileEditorClass}
+            mobilePreviewClass={mobilePreviewClass}
+            onChange={(changes) => updateVersion("cv", changes)}
+            onPrint={() => printDocument("CV", "<article class=\"stanford-cv\">" + cvHtml + "</article>", stanfordCvPrintStyle)}
+            version={cvVersion}
+          />
         ) : documentTab === "rirekisho" ? (
-          <div>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-[#e7eee8] text-[#1e554a] dark:bg-[#20332a] dark:text-[#a8d9c6]">
-              <Languages size={18} />
-            </span>
-            <input
-              className={`min-w-0 flex-1 bg-transparent text-base font-bold outline-none ${rirekishoVersion.isTemplate ? "cursor-default" : "focus:rounded focus:ring-2 focus:ring-[#1e554a]/20"}`}
-              value={rirekishoVersion.title}
-              onChange={(event) => {
-                if (!rirekishoVersion.isTemplate) updateVersion("rirekisho", { title: event.target.value });
-              }}
-              readOnly={rirekishoVersion.isTemplate}
-              aria-label="履歴書 version name"
-            />
-            <button
-              className="ml-auto flex h-9 flex-none items-center gap-2 rounded-md border border-[#d5d4ce] bg-[#faf9f5] px-3 text-sm font-semibold text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]"
-              onClick={() => printDocument("履歴書", rirekishoHtml)}
-            >
-              <Printer size={16} /> PDF
-            </button>
-          </div>
-          <div className="grid grid-cols-[minmax(260px,360px)_minmax(0,1fr)] gap-3 max-lg:grid-cols-1">
-            <div className={`${mobileEditorClass} grid max-h-[720px] gap-3 overflow-y-auto pr-1 max-md:max-h-none max-md:overflow-visible max-md:pr-0`}>
-              <Field label="作成日" value={rirekisho.date} onChange={(value) => updateRirekisho("date", value)} />
-              <label className="grid gap-1.5">
-                <span className="text-xs font-bold uppercase tracking-wide text-[#747a76] dark:text-[#9ca9a2]">証明写真</span>
-                <input
-                  className="w-full rounded-md border border-[#cfcec7] bg-[#fbfaf7] px-3 py-2 text-sm text-[#17201d] outline-none file:mr-3 file:rounded-md file:border-0 file:bg-[#1e554a] file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-white dark:border-[#39453f] dark:bg-[#111713] dark:text-[#edf3ef]"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => updateRirekishoPhoto(event.target.files?.[0])}
-                />
-                {rirekisho.photoDataUrl && (
-                  <button
-                    className="h-9 rounded-md border border-[#d1d0ca] bg-white px-3 text-sm font-semibold text-[#555d58] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#d4ddd7]"
-                    type="button"
-                    onClick={() => updateRirekisho("photoDataUrl", "")}
-                  >
-                    Remove photo
-                  </button>
-                )}
-              </label>
-              <Field label="氏名" value={rirekisho.name} onChange={(value) => updateRirekisho("name", value)} />
-              <Field label="ふりがな" value={rirekisho.furigana} onChange={(value) => updateRirekisho("furigana", value)} />
-              <Field label="生年月日" value={rirekisho.birthDate} onChange={(value) => updateRirekisho("birthDate", value)} />
-              <Field label="性別" value={rirekisho.gender} onChange={(value) => updateRirekisho("gender", value)} />
-              <Field label="郵便番号" value={rirekisho.postalCode} onChange={(value) => updateRirekisho("postalCode", value)} />
-              <Field label="現住所ふりがな（任意）" value={rirekisho.addressFurigana || ""} onChange={(value) => updateRirekisho("addressFurigana", value)} />
-              <Field label="現住所" value={rirekisho.address} onChange={(value) => updateRirekisho("address", value)} multiline />
-              <Field label="電話" value={rirekisho.phone} onChange={(value) => updateRirekisho("phone", value)} />
-              <Field label="メール" value={rirekisho.email} onChange={(value) => updateRirekisho("email", value)} />
-              <Field label="志望職種" value={rirekisho.desiredRole} onChange={(value) => updateRirekisho("desiredRole", value)} />
-              <Field label="職務要約" value={rirekisho.summary} onChange={(value) => updateRirekisho("summary", value)} multiline />
-              <Field label="得意分野・技術" value={rirekisho.skills} onChange={(value) => updateRirekisho("skills", value)} multiline />
-              <Field label="学歴" value={rirekisho.education} onChange={(value) => updateRirekisho("education", value)} multiline />
-              <Field label="職歴" value={rirekisho.workHistory} onChange={(value) => updateRirekisho("workHistory", value)} multiline />
-              <Field label="免許・資格" value={rirekisho.certifications} onChange={(value) => updateRirekisho("certifications", value)} multiline />
-              <Field label="志望動機" value={rirekisho.motivation} onChange={(value) => updateRirekisho("motivation", value)} multiline />
-              <Field label="自己PR" value={rirekisho.selfPr} onChange={(value) => updateRirekisho("selfPr", value)} multiline />
-              <Field label="本人希望欄" value={rirekisho.requests} onChange={(value) => updateRirekisho("requests", value)} multiline />
-            </div>
-            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-              <div className="a4-preview-page text-[#17201d]">
-                <div
-                  className="rirekisho-preview"
-                  dangerouslySetInnerHTML={{ __html: rirekishoHtml }}
-                />
-              </div>
-            </div>
-          </div>
-          </div>
+          <RirekishoDocument
+            data={rirekisho}
+            html={rirekishoHtml}
+            mobileEditorClass={mobileEditorClass}
+            mobilePreviewClass={mobilePreviewClass}
+            onFieldChange={updateRirekisho}
+            onPhotoChange={updateRirekishoPhoto}
+            onPrint={() => printDocument("履歴書", rirekishoHtml)}
+            onTitleChange={(title) => updateVersion("rirekisho", { title })}
+            version={rirekishoVersion}
+          />
         ) : (
-          <div>
-          <div className="mb-3 flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-md bg-[#e7eee8] text-[#1e554a] dark:bg-[#20332a] dark:text-[#a8d9c6]">
-              <FileText size={18} />
-            </span>
-            <input
-              className={`min-w-0 flex-1 bg-transparent text-base font-bold outline-none ${shokumuVersion.isTemplate ? "cursor-default" : "focus:rounded focus:ring-2 focus:ring-[#1e554a]/20"}`}
-              value={shokumuVersion.title}
-              onChange={(event) => {
-                if (!shokumuVersion.isTemplate) updateVersion("shokumu", { title: event.target.value });
-              }}
-              readOnly={shokumuVersion.isTemplate}
-              aria-label="職務経歴書 version name"
-            />
-            <button
-              className="ml-auto flex h-9 flex-none items-center gap-2 rounded-md border border-[#d5d4ce] bg-[#faf9f5] px-3 text-sm font-semibold text-[#555c57] dark:border-[#39453f] dark:bg-[#111713] dark:text-[#bdc8c1]"
-              onClick={() => printDocument("職務経歴書", shokumuHtml)}
-            >
-              <Printer size={16} /> PDF
-            </button>
-          </div>
-          <div className="grid grid-cols-[minmax(260px,380px)_minmax(0,1fr)] gap-3 max-lg:grid-cols-1">
-            <div className={`${mobileEditorClass} grid max-h-[720px] gap-3 overflow-y-auto pr-1 max-md:max-h-none max-md:overflow-visible max-md:pr-0`}>
-              <Field label="作成日" value={shokumu.date} onChange={(value) => updateShokumu("date", value)} />
-              <Field label="氏名" value={shokumu.name} onChange={(value) => updateShokumu("name", value)} />
-              <Field label="職務要約" value={shokumu.summary} onChange={(value) => updateShokumu("summary", value)} multiline />
-              <Field label="活かせる経験・知識・技術" value={shokumu.skills} onChange={(value) => updateShokumu("skills", value)} multiline />
-              {shokumuExperiences.map((experience, index) => (
-                <fieldset className="grid gap-3 rounded-md border border-[#d8d7d0] p-3 dark:border-[#39453f]" key={experience.id || index}>
-                  <legend className="px-1 text-sm font-bold text-[#555d58] dark:text-[#d4ddd7]">
-                    <span className="inline-flex items-center gap-2">
-                      職歴 {index + 1}
-                      {shokumuExperiences.length > 1 && (
-                        <button
-                          className="grid h-6 w-6 place-items-center rounded text-[#8c3429] hover:bg-[#f2ddd8] dark:text-[#ff9f91] dark:hover:bg-[#3b2925]"
-                          type="button"
-                          onClick={() => removeShokumuExperience(index)}
-                          title={`職歴 ${index + 1} を削除`}
-                          aria-label={`職歴 ${index + 1} を削除`}
-                        >
-                          <X size={14} />
-                        </button>
-                      )}
-                    </span>
-                  </legend>
-                  <Field label="期間" value={experience.period} onChange={(value) => updateShokumuExperience(index, "period", value)} />
-                  <Field label="会社名" value={experience.company} onChange={(value) => updateShokumuExperience(index, "company", value)} />
-                  <Field label="事業内容" value={experience.business} onChange={(value) => updateShokumuExperience(index, "business", value)} multiline />
-                  <Field label="雇用形態" value={experience.employmentType} onChange={(value) => updateShokumuExperience(index, "employmentType", value)} />
-                  <Field label="職種" value={experience.role} onChange={(value) => updateShokumuExperience(index, "role", value)} />
-                  <Field label="担当業務" value={experience.responsibilities} onChange={(value) => updateShokumuExperience(index, "responsibilities", value)} multiline />
-                  <Field label="実績・取り組み" value={experience.achievements} onChange={(value) => updateShokumuExperience(index, "achievements", value)} multiline />
-                  <Field label="使用技術" value={experience.technologies} onChange={(value) => updateShokumuExperience(index, "technologies", value)} multiline />
-                </fieldset>
-              ))}
-              <button
-                className="flex h-9 items-center justify-center gap-2 rounded-md border border-dashed border-[#aeb5b0] bg-[#f8f7f3] text-sm font-semibold text-[#555d58] hover:border-[#6c897e] hover:text-[#1e554a] dark:border-[#4a5750] dark:bg-[#151c18] dark:text-[#bdc8c1]"
-                type="button"
-                onClick={addShokumuExperience}
-              >
-                <Plus size={16} /> 職歴を追加
-              </button>
-              <Field label="自己PR" value={shokumu.selfPr} onChange={(value) => updateShokumu("selfPr", value)} multiline />
-              <Field label="資格・語学" value={shokumu.certifications} onChange={(value) => updateShokumu("certifications", value)} multiline />
-            </div>
-            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-              <article className="a4-preview-page text-sm leading-6 text-[#17201d]">
-                <div
-                  className="cv-preview shokumu-preview"
-                  dangerouslySetInnerHTML={{ __html: shokumuHtml }}
-                />
-              </article>
-            </div>
-          </div>
-          </div>
+          <ShokumuDocument
+            data={shokumu}
+            experiences={shokumuExperiences}
+            html={shokumuHtml}
+            mobileEditorClass={mobileEditorClass}
+            mobilePreviewClass={mobilePreviewClass}
+            onAddExperience={addShokumuExperience}
+            onFieldChange={updateShokumu}
+            onPrint={() => printDocument("職務経歴書", shokumuHtml)}
+            onRemoveExperience={removeShokumuExperience}
+            onTitleChange={(title) => updateVersion("shokumu", { title })}
+            onUpdateExperience={updateShokumuExperience}
+            version={shokumuVersion}
+          />
         )}
       </section>
       <DocumentNavigation activeTab={documentTab} mobile onChange={onDocumentTabChange} />

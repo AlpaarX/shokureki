@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
-import ProfileView from "./components/ProfileView";
+import DocumentsView from "./components/documents/DocumentsView";
 
 const STORAGE_KEY = "shokureki.documents.v1";
 const DOCUMENT_TABS = ["cv", "rirekisho", "shokumu"];
@@ -60,7 +60,7 @@ export default function App() {
   return (
     <main className="app-shell min-h-screen">
       <Header mobileViewMode={mobileViewMode} onMobileViewModeChange={setMobileViewMode} />
-      <ProfileView
+      <DocumentsView
         documents={documents}
         documentTab={documentTab}
         mobileViewMode={mobileViewMode}

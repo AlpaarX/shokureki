@@ -1,0 +1,465 @@
+@import "tailwindcss";
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+@layer base {
+  :root {
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, "Segoe UI", sans-serif;
+    color: #17201d;
+    background: #eef2f0;
+    font-synthesis: none;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    min-width: 320px;
+    min-height: 100vh;
+    margin: 0;
+    background: #eef2f0;
+    -webkit-font-smoothing: antialiased;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  @media (max-width: 768px) {
+    html,
+    body,
+    #root {
+      width: 100%;
+      max-width: 100%;
+      overflow-x: clip;
+    }
+
+    .app-shell {
+      min-height: 100dvh;
+      background:
+        radial-gradient(circle at 85% 2%, rgb(190 225 210 / 34%), transparent 28rem),
+        #eef2f0;
+    }
+
+    main {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+      padding-bottom: calc(54px + env(safe-area-inset-bottom));
+    }
+
+    .interview-prep {
+      width: 100%;
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    .interview-prep > aside > .mt-5 {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      overscroll-behavior-x: contain;
+      scrollbar-width: none;
+    }
+
+    .interview-prep > aside > .mt-5::-webkit-scrollbar {
+      display: none;
+    }
+
+    .interview-prep > aside > .mt-5 > button {
+      width: 150px;
+      min-width: 150px;
+      border-radius: 16px;
+    }
+
+    .a4-preview-stage {
+      width: 100%;
+      min-width: 0;
+      max-width: 100%;
+      overflow: hidden;
+    }
+
+    .a4-preview-page {
+      width: 100% !important;
+      min-width: 0 !important;
+      max-width: 100% !important;
+      padding: clamp(16px, 5vw, 28px) !important;
+      overflow: hidden !important;
+      zoom: 1 !important;
+    }
+
+    .a4-preview-page *,
+    .cv-preview,
+    .rirekisho-preview,
+    .shokumu-preview {
+      min-width: 0;
+      max-width: 100%;
+      overflow-wrap: anywhere;
+    }
+
+    .a4-preview-page table {
+      width: 100%;
+      table-layout: fixed;
+    }
+
+  }
+
+  [data-theme="dark"] .app-shell {
+    background: #101411;
+  }
+
+  .range-thumb::-webkit-slider-runnable-track {
+    background: transparent;
+  }
+
+  .range-thumb::-moz-range-track {
+    background: transparent;
+  }
+
+  .range-thumb::-webkit-slider-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    appearance: none;
+    background: #1e554a;
+    box-shadow: 0 1px 5px rgb(23 32 29 / 22%);
+  }
+
+  .range-thumb::-moz-range-thumb {
+    pointer-events: auto;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #fff;
+    border-radius: 999px;
+    background: #1e554a;
+    box-shadow: 0 1px 5px rgb(23 32 29 / 22%);
+  }
+
+  .a4-preview-stage {
+    min-width: 0;
+    overflow: auto;
+    border: 1px solid #d8d7d0;
+    border-radius: 6px;
+    padding: 12px;
+    background: #e9e7e1;
+  }
+
+  .a4-preview-page {
+    width: min(100%, 794px);
+    min-width: 560px;
+    aspect-ratio: 210 / 297;
+    margin: 0 auto;
+    overflow: auto;
+    border: 1px solid #cfcec7;
+    padding: clamp(28px, 4vw, 48px);
+    background: #fff;
+    box-shadow: 0 3px 14px rgb(23 32 29 / 12%);
+  }
+
+  .stanford-cv {
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+  }
+
+  .stanford-cv h1 {
+    margin: 0 0 2px;
+    text-align: center;
+    font-size: 26px;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .stanford-cv .cv-contact {
+    margin: 0 0 22px;
+    text-align: center;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+
+  .stanford-cv h2 {
+    margin: 18px 0 9px;
+    border-bottom: 1.5px solid #111;
+    padding: 0 0 2px;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .stanford-cv h3,
+  .stanford-cv .cv-entry-meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .stanford-cv h3 {
+    margin: 11px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .stanford-cv .cv-entry-meta {
+    margin: 0;
+    font-style: italic;
+  }
+
+  .stanford-cv h3 span:last-child,
+  .stanford-cv .cv-entry-meta span:last-child {
+    flex: none;
+    text-align: right;
+  }
+
+  .stanford-cv p {
+    margin: 4px 0;
+  }
+
+  .stanford-cv ul {
+    margin: 4px 0 0;
+    padding-left: 18px;
+    list-style: disc outside;
+  }
+
+  .stanford-cv li {
+    margin: 2px 0;
+    padding-left: 2px;
+    display: list-item;
+  }
+
+  @media (max-width: 560px) {
+    .stanford-cv .cv-contact {
+      white-space: normal;
+    }
+
+    .stanford-cv h3,
+    .stanford-cv .cv-entry-meta {
+      align-items: flex-start;
+    }
+  }
+
+  .cv-preview:not(.stanford-cv) h1 {
+    margin: 0 0 18px;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.15;
+  }
+
+  .cv-preview:not(.stanford-cv) h2 {
+    margin: 24px 0 8px;
+    border-bottom: 1px solid #d8d7d0;
+    padding-bottom: 4px;
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .cv-preview:not(.stanford-cv) h3 {
+    margin: 14px 0 4px;
+    font-size: 15px;
+    font-weight: 800;
+  }
+
+  .cv-preview:not(.stanford-cv) p {
+    margin: 6px 0;
+  }
+
+  .cv-preview:not(.stanford-cv) ul {
+    margin: 8px 0 0 20px;
+    padding: 0;
+  }
+
+  .cv-preview:not(.stanford-cv) li {
+    margin: 4px 0;
+  }
+
+  .shokumu-preview {
+    font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .shokumu-preview h1 {
+    text-align: center;
+    letter-spacing: .12em;
+  }
+
+  .shokumu-preview h2 {
+    margin: 18px 0 6px;
+    border-bottom-color: #222;
+  }
+
+  .shokumu-preview .shokumu-meta {
+    text-align: right;
+  }
+
+  .shokumu-preview .shokumu-career-table {
+    width: 100%;
+    margin-top: 8px;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .shokumu-preview .shokumu-career-table th,
+  .shokumu-preview .shokumu-career-table td {
+    border: 1px solid #222;
+    padding: 5px 8px;
+    vertical-align: top;
+  }
+
+  .shokumu-preview .shokumu-career-table th {
+    width: 116px;
+    background: #f4f2ed;
+    text-align: center;
+  }
+
+  .shokumu-preview .shokumu-career-table ul {
+    margin-top: 0;
+  }
+
+  .rirekisho-preview {
+    color: #17201d;
+    font-family: "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    font-size: 12px;
+    line-height: 1.45;
+  }
+
+  .rirekisho-preview .rirekisho-date {
+    margin: -4px 0 6px;
+    text-align: right;
+  }
+
+  .rirekisho-preview h1 {
+    margin: 0 0 8px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: .2em;
+  }
+
+  .rirekisho-preview .rirekisho-top {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 30mm;
+    align-items: start;
+    gap: 2mm;
+  }
+
+  .rirekisho-preview .rirekisho-photo {
+    display: grid;
+    width: 30mm;
+    height: 40mm;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid #222;
+    text-align: center;
+    font-size: 10px;
+    line-height: 1.35;
+  }
+
+  .rirekisho-preview .rirekisho-photo-placeholder {
+    display: grid;
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .rirekisho-preview .rirekisho-photo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .rirekisho-preview table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  .rirekisho-preview th,
+  .rirekisho-preview td {
+    border: 1px solid #222;
+    padding: 5px 7px;
+    vertical-align: middle;
+  }
+
+  .rirekisho-preview th {
+    background: #f4f2ed;
+    text-align: center;
+    font-weight: 800;
+  }
+
+  .rirekisho-preview td {
+    height: 30px;
+    overflow-wrap: anywhere;
+  }
+
+  .rirekisho-preview .rirekisho-name {
+    height: 42px;
+    font-size: 20px;
+    font-weight: 800;
+  }
+
+  .rirekisho-preview .rirekisho-email {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .rirekisho-preview .rirekisho-birth {
+    white-space: nowrap;
+    font-size: 12px;
+  }
+
+  .rirekisho-preview .rirekisho-appeal {
+    line-height: 1.5;
+  }
+
+  .rirekisho-preview .rirekisho-basic-table th {
+    width: 86px;
+  }
+
+  .rirekisho-preview .rirekisho-history-table,
+  .rirekisho-preview .rirekisho-notes-table {
+    margin-top: 8px;
+  }
+
+  .rirekisho-preview .rirekisho-year {
+    width: 54px;
+    text-align: center;
+  }
+
+  .rirekisho-preview .rirekisho-month {
+    width: 42px;
+    text-align: center;
+  }
+
+  .rirekisho-preview .rirekisho-section-label {
+    text-align: center;
+    font-weight: 800;
+  }
+
+  .rirekisho-preview .rirekisho-notes-table th {
+    text-align: left;
+  }
+
+  .rirekisho-preview .rirekisho-notes-table td {
+    height: 86px;
+    vertical-align: top;
+  }
+}
+
+@layer utilities {
+  .overflow-wrap-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+}

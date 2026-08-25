@@ -1,6 +1,6 @@
 # Shokureki
 
-A standalone document workspace extracted from Jobinder. It includes editors and A4 previews for:
+A standalone document workspace. It includes editors and A4 previews for:
 
 - English CVs
 - Japanese 履歴書

@@ -1,5 +1,6 @@
 import React from "react";
 import { FileText, Plus, X } from "lucide-react";
+import A4Preview from "./A4Preview";
 import DocumentEditorHeader from "./DocumentEditorHeader";
 import Field from "./Field";
 
@@ -71,11 +72,12 @@ export default function ShokumuDocument({
           <Field label="自己PR" value={data.selfPr} onChange={(value) => onFieldChange("selfPr", value)} multiline />
           <Field label="資格・語学" value={data.certifications} onChange={(value) => onFieldChange("certifications", value)} multiline />
         </div>
-        <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-          <article className="a4-preview-page text-sm leading-6 text-[#17201d]">
-            <div className="cv-preview shokumu-preview" dangerouslySetInnerHTML={{ __html: html }} />
-          </article>
-        </div>
+        <A4Preview
+          className={`${mobilePreviewClass} max-md:rounded-none max-md:border-0 max-md:p-0`}
+          contentClassName="cv-preview shokumu-preview"
+          html={html}
+          pageClassName="text-sm leading-6 text-[#17201d]"
+        />
       </div>
     </div>
   );

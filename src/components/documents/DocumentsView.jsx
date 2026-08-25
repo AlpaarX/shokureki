@@ -706,7 +706,7 @@ export default function DocumentsView({
   };
 
   return (
-    <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:px-0 max-md:py-0 max-md:pb-24">
+    <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:px-0 max-md:py-0">
       <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c] max-md:rounded-none max-md:border-x-0 max-md:border-t-0 max-md:p-3">
         <div className="flex items-start gap-3 max-md:hidden">
           <div className="min-w-0 flex-1">

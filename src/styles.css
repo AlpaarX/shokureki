@@ -127,11 +127,10 @@
       width: 100% !important;
       min-width: 0 !important;
       max-width: 100% !important;
-      min-height: calc(141.4vw - 34px);
-      height: auto !important;
-      aspect-ratio: auto;
+      min-height: 0;
+      aspect-ratio: 210 / 297;
       padding: clamp(16px, 5vw, 28px) !important;
-      overflow: visible !important;
+      overflow: hidden !important;
       zoom: 1 !important;
     }
 
@@ -185,6 +184,9 @@
   }
 
   .a4-preview-stage {
+    position: relative;
+    display: grid;
+    gap: 12px;
     min-width: 0;
     overflow: auto;
     border: 1px solid #d8d7d0;
@@ -203,6 +205,40 @@
     padding: clamp(28px, 4vw, 48px);
     background: #fff;
     box-shadow: 0 3px 14px rgb(23 32 29 / 12%);
+  }
+
+  .a4-preview-measure {
+    position: absolute;
+    left: 0;
+    visibility: hidden;
+    height: auto !important;
+    min-height: 0 !important;
+    aspect-ratio: auto !important;
+    overflow: visible !important;
+    pointer-events: none;
+  }
+
+  .a4-preview-page--paginated {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .a4-preview-content-viewport {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .a4-preview-page-number {
+    position: absolute;
+    right: 12px;
+    bottom: 8px;
+    border-radius: 999px;
+    padding: 2px 7px;
+    color: #68706b;
+    background: rgb(255 255 255 / 88%);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.4;
   }
 
   .stanford-cv {

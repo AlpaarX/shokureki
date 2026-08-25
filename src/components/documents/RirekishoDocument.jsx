@@ -1,5 +1,6 @@
 import React from "react";
 import { Languages } from "lucide-react";
+import A4Preview from "./A4Preview";
 import DocumentEditorHeader from "./DocumentEditorHeader";
 import Field from "./Field";
 
@@ -64,11 +65,12 @@ export default function RirekishoDocument({
           <Field label="自己PR" value={data.selfPr} onChange={(value) => onFieldChange("selfPr", value)} multiline />
           <Field label="本人希望欄" value={data.requests} onChange={(value) => onFieldChange("requests", value)} multiline />
         </div>
-        <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-          <div className="a4-preview-page text-[#17201d]">
-            <div className="rirekisho-preview" dangerouslySetInnerHTML={{ __html: html }} />
-          </div>
-        </div>
+        <A4Preview
+          className={`${mobilePreviewClass} max-md:rounded-none max-md:border-0 max-md:p-0`}
+          contentClassName="rirekisho-preview"
+          html={html}
+          pageClassName="text-[#17201d]"
+        />
       </div>
     </div>
   );

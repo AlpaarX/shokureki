@@ -1,5 +1,6 @@
 import React from "react";
-import { Eye, FileText } from "lucide-react";
+import { FileText } from "lucide-react";
+import A4Preview from "./A4Preview";
 import DocumentEditorHeader from "./DocumentEditorHeader";
 
 function insertTextareaText(textarea, value) {
@@ -35,14 +36,13 @@ export default function CvDocument({ html, mobileEditorClass, mobilePreviewClass
           }}
           aria-label="CV Markdown editor"
         />
-        <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
-          <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#747a76]">
-            <Eye size={14} /> A4 preview
-          </div>
-          <article className="a4-preview-page text-sm leading-6 text-[#17201d]">
-            <div className="cv-preview stanford-cv" dangerouslySetInnerHTML={{ __html: html }} />
-          </article>
-        </div>
+        <A4Preview
+          className={`${mobilePreviewClass} max-md:rounded-none max-md:border-0 max-md:p-0`}
+          contentClassName="cv-preview stanford-cv"
+          html={html}
+          label
+          pageClassName="text-sm leading-6 text-[#17201d]"
+        />
       </div>
     </div>
   );

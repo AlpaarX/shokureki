@@ -559,6 +559,7 @@ function addMissingTemplates(library, sourceText) {
 export default function ProfileView({
   documents,
   documentTab,
+  mobileViewMode,
   onDocumentTabChange,
   onDocumentsChange,
 }) {
@@ -569,6 +570,8 @@ export default function ProfileView({
   );
   const [renamingVersionId, setRenamingVersionId] = useState(null);
   const [versionNameDraft, setVersionNameDraft] = useState("");
+  const mobileEditorClass = mobileViewMode === "edit" ? "" : "max-md:hidden";
+  const mobilePreviewClass = mobileViewMode === "preview" ? "" : "max-md:hidden";
   const activeVersion = (type) => {
     const versions = library[type];
     return versions.find((version) => version.id === library.active?.[type]) || versions[0];
@@ -721,11 +724,11 @@ export default function ProfileView({
   };
 
   return (
-    <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:pb-24">
-      <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c]">
+    <section className="mx-auto grid min-w-0 max-w-[1800px] gap-5 overflow-hidden px-[clamp(12px,2vw,28px)] py-7 text-[#17201d] dark:text-[#edf3ef] max-md:px-0 max-md:py-0 max-md:pb-24">
+      <section className="min-w-0 max-w-full overflow-hidden rounded-lg border border-[#d8d7d0] bg-white p-4 dark:border-[#303b35] dark:bg-[#18201c] max-md:rounded-none max-md:border-x-0 max-md:border-t-0 max-md:p-3">
         <DocumentNavigation activeTab={documentTab} onChange={onDocumentTabChange} />
 
-        <div className="document-version-tabs mb-4 flex min-w-0 items-end overflow-x-auto overflow-y-hidden border-b border-[#cbc9c1] px-2 dark:border-[#3b4841]">
+        <div className="document-version-tabs mb-4 flex min-w-0 items-end overflow-x-auto overflow-y-hidden border-b border-[#cbc9c1] px-2 dark:border-[#3b4841] max-md:-mx-3 max-md:px-3">
           {library[documentTab].map((version) => {
             const selected = activeVersion(documentTab).id === version.id;
             return (
@@ -829,7 +832,7 @@ export default function ProfileView({
           </div>
           <div className="grid grid-cols-2 gap-3 max-lg:grid-cols-1">
             <textarea
-              className="min-h-[620px] resize-y rounded-md border border-[#d8d7d0] bg-[#fbfaf7] p-4 font-mono text-[13px] leading-6 text-[#17201d] outline-none focus:border-[#6c897e] focus:ring-4 focus:ring-[#1e554a]/10 dark:border-[#303b35] dark:bg-[#111713] dark:text-[#edf3ef]"
+              className={`${mobileEditorClass} min-h-[620px] resize-y rounded-md border border-[#d8d7d0] bg-[#fbfaf7] p-4 font-mono text-[13px] leading-6 text-[#17201d] outline-none focus:border-[#6c897e] focus:ring-4 focus:ring-[#1e554a]/10 dark:border-[#303b35] dark:bg-[#111713] dark:text-[#edf3ef] max-md:min-h-[calc(100dvh-220px)] max-md:rounded-xl`}
               value={cvMarkdown}
               onChange={(event) => updateVersion("cv", { content: event.target.value })}
               onKeyDown={(event) => {
@@ -839,7 +842,7 @@ export default function ProfileView({
               }}
               aria-label="CV Markdown editor"
             />
-            <div className="a4-preview-stage">
+            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
               <div className="mb-2 flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-[#747a76]">
                 <Eye size={14} /> A4 preview
               </div>
@@ -875,7 +878,7 @@ export default function ProfileView({
             </button>
           </div>
           <div className="grid grid-cols-[minmax(260px,360px)_minmax(0,1fr)] gap-3 max-lg:grid-cols-1">
-            <div className="grid max-h-[720px] gap-3 overflow-y-auto pr-1">
+            <div className={`${mobileEditorClass} grid max-h-[720px] gap-3 overflow-y-auto pr-1 max-md:max-h-none max-md:overflow-visible max-md:pr-0`}>
               <Field label="作成日" value={rirekisho.date} onChange={(value) => updateRirekisho("date", value)} />
               <label className="grid gap-1.5">
                 <span className="text-xs font-bold uppercase tracking-wide text-[#747a76] dark:text-[#9ca9a2]">証明写真</span>
@@ -914,7 +917,7 @@ export default function ProfileView({
               <Field label="自己PR" value={rirekisho.selfPr} onChange={(value) => updateRirekisho("selfPr", value)} multiline />
               <Field label="本人希望欄" value={rirekisho.requests} onChange={(value) => updateRirekisho("requests", value)} multiline />
             </div>
-            <div className="a4-preview-stage">
+            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
               <div className="a4-preview-page text-[#17201d]">
                 <div
                   className="rirekisho-preview"
@@ -947,7 +950,7 @@ export default function ProfileView({
             </button>
           </div>
           <div className="grid grid-cols-[minmax(260px,380px)_minmax(0,1fr)] gap-3 max-lg:grid-cols-1">
-            <div className="grid max-h-[720px] gap-3 overflow-y-auto pr-1">
+            <div className={`${mobileEditorClass} grid max-h-[720px] gap-3 overflow-y-auto pr-1 max-md:max-h-none max-md:overflow-visible max-md:pr-0`}>
               <Field label="作成日" value={shokumu.date} onChange={(value) => updateShokumu("date", value)} />
               <Field label="氏名" value={shokumu.name} onChange={(value) => updateShokumu("name", value)} />
               <Field label="職務要約" value={shokumu.summary} onChange={(value) => updateShokumu("summary", value)} multiline />
@@ -990,7 +993,7 @@ export default function ProfileView({
               <Field label="自己PR" value={shokumu.selfPr} onChange={(value) => updateShokumu("selfPr", value)} multiline />
               <Field label="資格・語学" value={shokumu.certifications} onChange={(value) => updateShokumu("certifications", value)} multiline />
             </div>
-            <div className="a4-preview-stage">
+            <div className={`${mobilePreviewClass} a4-preview-stage max-md:rounded-none max-md:border-0 max-md:p-0`}>
               <article className="a4-preview-page text-sm leading-6 text-[#17201d]">
                 <div
                   className="cv-preview shokumu-preview"

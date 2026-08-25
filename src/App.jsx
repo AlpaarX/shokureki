@@ -30,6 +30,7 @@ function loadDocuments() {
 export default function App() {
   const [documents, setDocuments] = useState(loadDocuments);
   const [documentTab, setDocumentTab] = useState(documentTabFromLocation);
+  const [mobileViewMode, setMobileViewMode] = useState("edit");
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
@@ -58,10 +59,11 @@ export default function App() {
 
   return (
     <main className="app-shell min-h-screen">
-      <Header />
+      <Header mobileViewMode={mobileViewMode} onMobileViewModeChange={setMobileViewMode} />
       <ProfileView
         documents={documents}
         documentTab={documentTab}
+        mobileViewMode={mobileViewMode}
         onDocumentTabChange={selectDocumentTab}
         onDocumentsChange={setDocuments}
       />

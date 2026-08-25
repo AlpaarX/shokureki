@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "./components/Header";
 import DocumentsView from "./components/documents/DocumentsView";
+import useTheme from "./hooks/useTheme";
 
 const STORAGE_KEY = "shokureki.documents.v1";
 const DOCUMENT_TABS = ["cv", "rirekisho", "shokumu"];
@@ -31,6 +32,7 @@ export default function App() {
   const [documents, setDocuments] = useState(loadDocuments);
   const [documentTab, setDocumentTab] = useState(documentTabFromLocation);
   const [mobileViewMode, setMobileViewMode] = useState("edit");
+  const [theme, setTheme] = useTheme();
 
   useEffect(() => {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(documents));
@@ -59,13 +61,20 @@ export default function App() {
 
   return (
     <main className="app-shell min-h-screen">
-      <Header mobileViewMode={mobileViewMode} onMobileViewModeChange={setMobileViewMode} />
+      <Header
+        mobileViewMode={mobileViewMode}
+        onMobileViewModeChange={setMobileViewMode}
+        onThemeChange={setTheme}
+        theme={theme}
+      />
       <DocumentsView
         documents={documents}
         documentTab={documentTab}
         mobileViewMode={mobileViewMode}
         onDocumentTabChange={selectDocumentTab}
         onDocumentsChange={setDocuments}
+        onThemeChange={setTheme}
+        theme={theme}
       />
     </main>
   );

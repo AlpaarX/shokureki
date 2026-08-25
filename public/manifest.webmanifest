@@ -1,0 +1,24 @@
+{
+  "name": "職歴 — Application Documents",
+  "short_name": "職歴",
+  "description": "Create and manage CV, rirekisho, and shokumu keirekisho documents.",
+  "start_url": "/shokureki/",
+  "scope": "/shokureki/",
+  "display": "standalone",
+  "background_color": "#eef2f0",
+  "theme_color": "#1e554a",
+  "icons": [
+    {
+      "src": "/shokureki/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/shokureki/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

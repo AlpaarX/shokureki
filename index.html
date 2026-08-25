@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#eef2f0" />
+    <meta name="theme-color" content="#eef2f0" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#101411" media="(prefers-color-scheme: dark)" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="職歴" />
     <meta
       name="description"
       content="Create and manage CV, rirekisho, and shokumu keirekisho documents."
@@ -18,6 +23,10 @@
         document.documentElement.style.colorScheme = theme;
       })();
     </script>
+    <link rel="icon" type="image/png" sizes="32x32" href="/shokureki/favicon-32.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/shokureki/icon-192.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/shokureki/apple-touch-icon.png" />
+    <link rel="manifest" href="/shokureki/manifest.webmanifest" />
     <title>職歴</title>
   </head>
   <body>

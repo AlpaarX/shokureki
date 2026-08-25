@@ -16,7 +16,3 @@ All document data, including every CV version, is stored only in the browser's l
 npm install
 npm run dev
 ```
-
-## Deployment
-
-Pushes to `main` are built and deployed to GitHub Pages by the workflow in `.github/workflows/deploy-pages.yml`.
